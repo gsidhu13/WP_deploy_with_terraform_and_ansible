@@ -1,0 +1,92 @@
+- hosts: all
+  remote_user: ec2-user
+  become: yes
+  
+  tasks:
+    - name: Download the package 
+      get_url:
+        url: https://github.com/WordPress/WordPress/archive/master.zip
+        dest: .
+
+    - name: create a temp directory
+      file:
+        path: /tmp/WordPress_Temp
+        state: directory
+
+    - name: Unarchive the WordPress_master to temp folder
+      unarchive:
+        src: WordPress-master.zip
+        dest: /tmp/WordPress_Temp
+        remote_src: yes
+
+    - name: create a tmp/WordPress directory
+      file:
+        path: /tmp/WordPress
+        state: directory
+
+    - name: Copy the content from a temp folder to WordPress folder
+      copy:
+        src: /tmp/WordPress_Temp/WordPress-master/
+        dest: /tmp/WordPress
+        remote_src: yes
+
+    # - name: remove a temp directory
+    #   file:
+    #     path: /tmp/WordPress_Temp
+    #     state: absent
+
+    - name: create a scripts directory
+      file:
+        path: /tmp/WordPress/scripts
+        state: directory
+
+    - name: Copy dependencies file
+      copy:
+        src: scripts/install_dependencies.sh
+        dest: /tmp/WordPress/scripts
+
+    - name: Copy start_server.sh file
+      copy:
+        src:  scripts/start_server.sh
+        dest: /tmp/WordPress/scripts
+
+    - name: Copy stop_server.sh file
+      copy:
+        src: scripts/stop_server.sh
+        dest: /tmp/WordPress/scripts
+
+    - name: Copy create_test_db.sh file
+      copy:
+        src: scripts/create_test_db.sh
+        dest: /tmp/WordPress/scripts
+
+    - name: Copy change_permissions.sh file
+      copy:
+        src: scripts/change_permissions.sh
+        dest: /tmp/WordPress/scripts
+
+    - name: make scripts folder executable
+      file:
+        path: /tmp/WordPress/scripts
+        state: directory
+        mode: '0755' 
+    - name: Copy appspec.yml file
+      copy:
+        src: scripts/appspec.yml
+        dest: /tmp/WordPress
+    - name: archive/zip the Wordpress
+      archive: 
+        format: zip
+        path: /tmp/WordPress
+        dest: /tmp/WordPress.zip
+    - name: move files to s3
+      command: aws s3 cp /tmp/WordPress.zip s3://codedeploy-gsingh/ 
+
+   
+
+
+        
+
+
+
+      
