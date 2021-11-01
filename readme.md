@@ -2,7 +2,7 @@
 
 This tutorial is available in AWS CodeDeploy [documentation](https://docs.aws.amazon.com/codedeploy/latest/userguide/tutorials-wordpress.html) 
 
-All the steps in documentations were performed either using console or AWS CLI, But I provisioned and configured the resources with Terraform, Ansible, and bash scripts.
+All the steps in the documentation were performed either using console or AWS CLI, But I provisioned and configured the resources with Terraform, Ansible, and bash scripts.
 
 Everything was provisioned or configured from my laptop, I didn't log into EC2 Instance. If you are planning to do the same, make sure you have your AWS profile configured, otherwise, you may experience authentication issues.
 
